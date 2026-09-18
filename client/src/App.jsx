@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
-// import {UserProfile} from './components/UserProfile'
+import UserProfile from './components/UserProfile'
 
 
 function App() {
-  
+
   const [users, setUsers] = useState([])
   const [user, setUser] = useState(null)
   const [load, setLoad] = useState(true)
+  const [userload, setUserLoad] = useState(false)
   const [error, setError] = useState("")
   const [formData, setFormData] = useState({
     "name": '',
@@ -22,84 +23,98 @@ function App() {
   })
 
   const handleChange = (e) => {
-    setFormData({...formData,[e.target.name]:e.target.value});
-    //setUserData({ ...userData, [e.target.name]: e.target.value });
+    //setFormData({ ...formData, [e.target.name]: e.target.value });
+    setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
-    async function handleSubmit(e){
-      e.preventDefault();
-
-      try{
-      const response = await fetch("http://localhost:3000/api/users",{
-        method:'POST',
-        body:JSON.stringify(formData),
-        headers:{
-          "content-type":'application/json; charset=UTF-8'
-        }
-      });
-
-      if(response.ok){
-        const data = await response.json();
-        console.log("Success:",data);
-        alert("Form submitted successfully!")
-      }
-      else{
-        const error = await response.json();
-        console.error('Server error:', error);
-      }
-      fetch("http://localhost:3000/api/users")
-        .then((res)=>res.json())
-        .then((data)=>setUsers(data))
-        .then(()=>setLoad(false))
-        .catch((err)=>{
-          console.error("Error fetching data:",err);
-          setLoad(false)
-          setError("Failed to load users")})
-  }
-      catch (error) {
-        console.error('Network error:', error);
-      }
-
-    }
-
-  // async function getUser(e) {
+  // async function handleSubmit(e) {
   //   e.preventDefault();
 
   //   try {
-  //     const response = await fetch(
-  //       `http://localhost:3000/api/users/${userData.user_id}`
-  //     );
+  //     const response = await fetch("http://localhost:3000/api/users", {
+  //       method: 'POST',
+  //       body: JSON.stringify(formData),
+  //       headers: {
+  //         "content-type": 'application/json; charset=UTF-8'
+  //       }
+  //     });
 
-  //     if (!response.ok) {
-  //       throw new Error("User not found");
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       console.log("Success:", data);
+  //       alert("Form submitted successfully!")
   //     }
-
-  //     const data = await response.json();
-
-  //     setUser(data[0]);
-  //   } catch (error) {
-  //     console.error("Error fetching user:", error);
-  //     setUser(null);
+  //     else {
+  //       const error = await response.json();
+  //       console.error('Server error:', error);
+  //     }
+  //     fetch("http://localhost:3000/api/users")
+  //       .then((res) => res.json())
+  //       .then((data) => setUsers(data))
+  //       .then(() => setLoad(false))
+  //       .catch((err) => {
+  //         console.error("Error fetching data:", err);
+  //         setLoad(false)
+  //         setError("Failed to load users")
+  //       })
   //   }
+  //   catch (error) {
+  //     console.error('Network error:', error);
+  //   }
+
   // }
 
+  async function getUser(e) {
+    e.preventDefault();
+
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    
+    if (!uuidRegex.test(userData.user_id)) {
+      alert("Please enter a valid UUID");
+      return;
+    }
+    setUserLoad(true);
+    setUser(null);
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/users/${userData.user_id}`
+      );
+
+      if (!response.ok) {
+        throw new Error("User not found");
+      }
+
+      const data = await response.json();
+
+      
+      setUser(data);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      setUser(null);
+    }
+    finally{
+      setUserLoad(false);
+    }
+  }
 
 
-  useEffect(() => {
-    fetch("http://localhost:3000/api/users")
-      .then((res) => res.json())
-      .then((data) => setUsers(data))
-      .then(() => setLoad(false))
-      .catch((err) => {
-        console.error("Error fetching data:", err);
-        setLoad(false)
-        setError("Failed to load users")
-      })
-  }, [])
+
+  // useEffect(() => {
+  //   fetch("http://localhost:3000/api/users")
+  //     .then((res) => res.json())
+  //     .then((data) => setUsers(data))
+  //     .then(() => setLoad(false))
+  //     .catch((err) => {
+  //       console.error("Error fetching data:", err);
+  //       setLoad(false)
+  //       setError("Failed to load users")
+  //     })
+  // }, [])
 
   return (
     <>
-      {load ? 'Loading users' : error ? error :
+      {/* {load ? 'Loading users' : error ? error :
         (
           users.map((user) => (
             <div key={user.user_id} className='user'>
@@ -130,14 +145,24 @@ function App() {
         <label>Upload Resume:</label>
         <input type="file" name='resume_url' onChange={handleChange}/>
         <button type='submit'>Submit</button>
-      </form>
+      </form> */}
 
-      {/* <form onSubmit={getUser}>
+      <form onSubmit={getUser}>
         <label>Enter User Id:</label>
 
-        <input type='text' name='user_id' value={userData.user_id} onChange={handleChange}/>
+        <input type='text' name='user_id' value={userData.user_id} onChange={handleChange} />
         <button type='submit'>Get user</button>
-      </form> */}
+      </form>
+
+      {userload?(<p>Loading user</p>):
+      user?
+      (
+      <>
+      <div>User:</div>
+      <UserProfile user={user}/>
+      </>):
+      (<div>No user selected or found</div>)
+      }
 
       {/* {user && (
         <div className="user">
@@ -148,7 +173,7 @@ function App() {
         </div>
       )} */}
 
-      {/* {user&&<UserProfile user={user} />} */}
+      
     </>
   )
 }
