@@ -67,13 +67,6 @@ function App() {
   async function getUser(e) {
     e.preventDefault();
 
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-    
-    if (!uuidRegex.test(userData.user_id)) {
-      alert("Please enter a valid UUID");
-      return;
-    }
     setUserLoad(true);
     setUser(null);
     try {
@@ -82,7 +75,8 @@ function App() {
       );
 
       if (!response.ok) {
-        throw new Error("User not found");
+        const errorData = await response.json();
+        throw new Error(errorData.error);
       }
 
       const data = await response.json();
