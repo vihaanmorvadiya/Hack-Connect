@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const { Pool } = pkg;
-const dbPassword = process.env.DB_PASSWORD; // Fixed typo in variable name
+const dbPassword = process.env.DB_PASSWORD; 
 
 const pool = new Pool({
     user: 'postgres',
