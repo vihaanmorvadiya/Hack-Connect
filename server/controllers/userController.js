@@ -53,6 +53,7 @@ export const createUser = async (req, res) => {
         })
     }
     catch (error) {
+        console.error("Database query error:", err);
         res.status(500).json({ error: "User creation unsuccesfull" })
     }
 };

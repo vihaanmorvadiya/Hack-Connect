@@ -2,6 +2,8 @@ import express from 'express'
 import cors from 'cors'
 import { connectDB } from './db.js'
 import userRoutes from "./routes/userRoutes.js"
+import hackathonRoutes from "./routes/hackathonRoutes.js"
+
 
 const app = express();
 
@@ -23,6 +25,7 @@ app.get('/api/test', (req, res) => {
 })
 
 app.use("/api/users",userRoutes)
+app.use("/api/hackathons",hackathonRoutes)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
