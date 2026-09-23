@@ -1,5 +1,5 @@
 export async function fetchHackathons(){
-    const response = await fetch("http://localhost/api/hackathons");
+    const response = await fetch("http://localhost:3000/api/hackathons");
 
     if(!response.ok){
         throw new Error("Failed to fetch hackathons")
@@ -10,7 +10,7 @@ export async function fetchHackathons(){
 
 
 export async function createHackathon(hackathonData){
-    const response = await fetch("http://localhost/api/hackathons",{
+    const response = await fetch("http://localhost:3000/api/hackathons",{
         method:'POST',
         body:JSON.stringify(hackathonData),
         headers: {
