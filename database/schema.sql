@@ -24,3 +24,23 @@ CREATE TABLE IF NOT EXISTS hackathons(
 
     CHECK (end_date >= start_date)
 );
+
+ALTER TABLE hackathons
+ADD COLUMN min_team_size INTEGER,
+ADD COLUMN max_team_size INTEGER;
+
+ALTER TABLE hackathons
+ADD CONSTRAINT valid_min_team_size
+CHECK (min_team_size > 0),
+ADD CONSTRAINT valid_max_team_size
+CHECK (max_team_size >= min_team_size);
+
+CREATE TABLE IF NOT EXISTS teams(
+    team_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    team_name VARCHAR(50) NOT NULL,
+    description TEXT,
+    max_members INTEGER NOT NULL CHECK (max_members > 0),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    hack_id uuid NOT NULL REFERENCES hackathons(hack_id),
+    leader_id uuid NOT NULL REFERENCES users(user_id)
+);
