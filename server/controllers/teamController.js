@@ -17,27 +17,42 @@ export async function createTeam(req, res) {
     if (!team_name || !max_members || !hack_id || !leader_id) {
         return res.status(400).json({ error: 'Team name,Team size,Hack_id and Leader_id are required fields' })
     }
-    const hackQuery =
-        'SELECT EXISTS(SELECT 1 FROM hackathons WHERE hack_id = $1)';
 
-    const userQuery =
-        'SELECT EXISTS(SELECT 1 FROM users WHERE user_id = $1)';
-    if (max_members > 0) {
+    if (max_members <= 0) {
         return res.status(400).json({ error: 'Max members should be greater than 0' })
     }
-    const hackResult = await pool.query(hackQuery, [hack_id]);
-    const userResult = await pool.query(userQuery, [leader_id]);
 
-    if (!hackResult.rows[0].exists) {
-        return res.status(404).json({ error: 'Hackathon not found' });
-    }
-
-    if (!userResult.rows[0].exists) {
-        return res.status(404).json({ error: 'Leader not found' });
-    }
-    const sqlQuery = 'INSERT INTO teams(team_name,description,max_members) VALUES($1,$2,$3) RETURNING *'
-    const VALUES = [team_name, description, max_members]
+    const hackQuery =
+        'SELECT min_team_size,max_team_size FROM hackathons WHERE hack_id = $1';
+    const userQuery =
+        'SELECT EXISTS(SELECT 1 FROM users WHERE user_id = $1)';
+    const sqlQuery = 'INSERT INTO teams(team_name,description,max_members,hack_id,leader_id) VALUES($1,$2,$3,$4,$5) RETURNING *'
+    const VALUES = [team_name, description, max_members, hack_id, leader_id]
     try {
+
+
+        const hackResult = await pool.query(hackQuery, [hack_id]);
+        const userResult = await pool.query(userQuery, [leader_id]);
+
+        if (hackResult.rows.length == 0) {
+            return res.status(404).json({ error: 'Hackathon not found' });
+        }
+        else {
+            const minSize = hackResult.rows[0].min_team_size;
+            const maxSize = hackResult.rows[0].max_team_size;
+            if ((minSize !== null && max_members < minSize) ||
+                (maxSize !== null && max_members > maxSize)) {
+                return res.status(400).json({
+                    error: `Team size can be ${minSize}-${maxSize} only`
+                });
+
+            }
+        }
+
+        if (!userResult.rows[0].exists) {
+            return res.status(404).json({ error: 'Leader not found' });
+        }
+
         const result = await pool.query(sqlQuery, VALUES);
         res.status(201).json({
             message: "New team created successfully",

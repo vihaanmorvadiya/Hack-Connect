@@ -13,6 +13,8 @@ const HackathonsPage = () => {
         "description": '',
         "start_date": '',
         "end_date": '',
+        "min_team_size":'',
+        "max_team_size":'',
     });
 
     function handleFormChange(e) {
@@ -66,6 +68,10 @@ const HackathonsPage = () => {
                 <input type="date" name='start_date' value={formData.start_date} onChange={handleFormChange} />
                 <label>End date:</label>
                 <input type="date" name='end_date' value={formData.end_date} onChange={handleFormChange} />
+                <label>Min Team Size:</label>
+                <input type="integer" name='min_team_size' value={formData.min_team_size} onChange={handleFormChange} />
+                <label>Max Team Size:</label>
+                <input type="integer" name='max_team_size' value={formData.max_team_size} onChange={handleFormChange} />
                 <button type='submit'>Submit</button>
             </form>
 
@@ -80,6 +86,8 @@ const HackathonsPage = () => {
             <p>{hackathon.description}</p>
             <p>{hackathon.start_date}</p> 
             <p>{hackathon.end_date}</p>
+            <p>{hackathon.min_team_size}</p>
+            <p>{hackathon.max_team_size}</p>
           </div>  
        )})) }
        

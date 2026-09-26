@@ -13,9 +13,15 @@ export async function getAllHackathons(req,res) {
 };
 
 export async function createHackathon(req,res) {
-    const {name,venue,cover_image,regi_url,description,start_date,end_date} = req.body;
+    const {name,venue,cover_image,regi_url,description,start_date,end_date,min_team_size,max_team_size} = req.body;
     if(!name || !regi_url || !start_date || !end_date){
         return res.status(400).json({error:'Name,registartion link,start date and end date are required fields'})
+    }
+    if(!(min_team_size>0)){
+        return res.status(400).json({error:"Minimum team size needs to be greater than zero"})
+    }
+    if(max_team_size<min_team_size){
+        return res.status(400).json({error:'Max team size cannot be lesser than min team size'})
     }
     if(end_date<start_date){
         return res.status(400).json({error:'End date cannot be earlier than start date'})
