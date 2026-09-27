@@ -44,3 +44,13 @@ CREATE TABLE IF NOT EXISTS teams(
     hack_id uuid NOT NULL REFERENCES hackathons(hack_id),
     leader_id uuid NOT NULL REFERENCES users(user_id)
 );
+
+CREATE TABLE IF NOT EXISTS team_members (
+    team_id UUID NOT NULL REFERENCES teams(team_id),
+    user_id UUID NOT NULL REFERENCES users(user_id),
+    hack_id UUID NOT NULL REFERENCES hackathons(hack_id),
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (team_id, user_id),
+    UNIQUE (user_id, hack_id)
+);

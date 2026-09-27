@@ -26,41 +26,71 @@ export async function createTeam(req, res) {
         'SELECT min_team_size,max_team_size FROM hackathons WHERE hack_id = $1';
     const userQuery =
         'SELECT EXISTS(SELECT 1 FROM users WHERE user_id = $1)';
+    const membershipQuery = `SELECT EXISTS(SELECT 1 FROM team_members WHERE user_id = $1 AND hack_id = $2)`;
+
     const sqlQuery = 'INSERT INTO teams(team_name,description,max_members,hack_id,leader_id) VALUES($1,$2,$3,$4,$5) RETURNING *'
     const VALUES = [team_name, description, max_members, hack_id, leader_id]
+
+    const hackResult = await pool.query(hackQuery, [hack_id]);
+    const userResult = await pool.query(userQuery, [leader_id]);
+    const membershipResult = await pool.query(
+        membershipQuery,
+        [leader_id, hack_id]
+    );
+
+    if (hackResult.rows.length == 0) {
+        return res.status(404).json({ error: 'Hackathon not found' });
+    }
+    else {
+        const minSize = hackResult.rows[0].min_team_size;
+        const maxSize = hackResult.rows[0].max_team_size;
+        if ((minSize !== null && max_members < minSize) ||
+            (maxSize !== null && max_members > maxSize)) {
+            return res.status(400).json({
+                error: `Team size can be ${minSize}-${maxSize} only`
+            });
+
+        }
+    }
+
+
+    if (!userResult.rows[0].exists) {
+        return res.status(404).json({ error: 'Leader not found' });
+    }
+
+    if (membershipResult.rows[0].exists) {
+        return res.status(400).json({
+            error: "You are already part of a team for this hackathon"
+        });
+    }
+    
+    const client = await pool.connect();
     try {
+        await client.query("BEGIN");
 
+        const result = await client.query(sqlQuery, VALUES);
 
-        const hackResult = await pool.query(hackQuery, [hack_id]);
-        const userResult = await pool.query(userQuery, [leader_id]);
+        const teamID = result.rows[0].team_id;
 
-        if (hackResult.rows.length == 0) {
-            return res.status(404).json({ error: 'Hackathon not found' });
-        }
-        else {
-            const minSize = hackResult.rows[0].min_team_size;
-            const maxSize = hackResult.rows[0].max_team_size;
-            if ((minSize !== null && max_members < minSize) ||
-                (maxSize !== null && max_members > maxSize)) {
-                return res.status(400).json({
-                    error: `Team size can be ${minSize}-${maxSize} only`
-                });
+        const leaderQuery = 'INSERT INTO team_members(team_id,user_id,hack_id) VALUES($1,$2,$3)'
 
-            }
-        }
+        await client.query(leaderQuery, [teamID, leader_id, hack_id])
 
-        if (!userResult.rows[0].exists) {
-            return res.status(404).json({ error: 'Leader not found' });
-        }
+        await client.query("COMMIT");
 
-        const result = await pool.query(sqlQuery, VALUES);
         res.status(201).json({
-            message: "New team created successfully",
+            message: "Team created successfully and leader added as member",
             data: result.rows[0]
         })
+
     }
     catch (err) {
+        await client.query("ROLLBACK")
         console.error("Database query error:", err);
         res.status(500).json({ error: "Team creation unsuccesful" })
+    }
+
+    finally {
+        client.release();
     }
 };
