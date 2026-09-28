@@ -54,3 +54,15 @@ CREATE TABLE IF NOT EXISTS team_members (
     PRIMARY KEY (team_id, user_id),
     UNIQUE (user_id, hack_id)
 );
+
+CREATE TABLE IF NOT EXISTS applications(
+    app_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK(status IN ('accepted', 'pending', 'rejected')),
+    message VARCHAR(500),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    user_id uuid NOT NULL REFERENCES users(user_id)
+    team_id uuid NOT NULL REFERENCES teams(team_id),
+
+    UNIQUE(user_id,team_id)
+);
