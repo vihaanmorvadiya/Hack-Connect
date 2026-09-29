@@ -4,7 +4,7 @@ import { connectDB } from './db.js'
 import userRoutes from "./routes/userRoutes.js"
 import hackathonRoutes from "./routes/hackathonRoutes.js"
 import teamRoutes from "./routes/teamRoutes.js"
-
+import applicationRoutes from "./routes/applicationRoutes.js"
 
 const app = express();
 
@@ -28,6 +28,7 @@ app.get('/api/test', (req, res) => {
 app.use("/api/users",userRoutes)
 app.use("/api/hackathons",hackathonRoutes)
 app.use("/api/teams",teamRoutes)
+app.use("/api/applications",applicationRoutes)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
