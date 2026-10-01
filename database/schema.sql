@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS applications(
     message VARCHAR(500),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    user_id uuid NOT NULL REFERENCES users(user_id)
+    user_id uuid NOT NULL REFERENCES users(user_id),
     team_id uuid NOT NULL REFERENCES teams(team_id),
 
     UNIQUE(user_id,team_id)

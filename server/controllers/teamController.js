@@ -63,7 +63,7 @@ export async function createTeam(req, res) {
             error: "You are already part of a team for this hackathon"
         });
     }
-    
+
     const client = await pool.connect();
     try {
         await client.query("BEGIN");
@@ -94,3 +94,37 @@ export async function createTeam(req, res) {
         client.release();
     }
 };
+
+export const seeApplications = async (req, res) => {
+    const { id } = req.params;
+
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    if (!uuidRegex.test(id)) {
+        return res.status(400).json({ error: "Invalid team UUID" });
+    }
+
+    const applicationsQuery = `
+                                SELECT 
+                                    users.name AS applicant_name,
+                                    applications.app_id,
+                                    applications.message,
+                                    applications.status,
+                                    applications.created_at AS applied_at,
+                                    users.college,
+                                    users.about
+                                FROM applications 
+                                INNER JOIN users 
+                                ON applications.user_id = users.user_id
+                                WHERE applications.team_id=$1
+                                ORDER BY applications.created_at DESC
+                                `;
+    try {
+        const applicationResult = await pool.query(applicationsQuery, [id])
+        return res.status(200).json(applicationResult.rows)
+    }
+    catch(error){
+        console.error("Database query error", error.stack)
+        res.status(500).json({ error: "Internal server error" })
+    }
+}
