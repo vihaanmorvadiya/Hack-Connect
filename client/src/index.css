@@ -30,10 +30,11 @@
   }
 }
 
-.user{
+.display{
   background-color: #aa3bff;
   color: white;
   margin: 5px;
+  text-align: left;
 }
 
 @media (prefers-color-scheme: dark) {

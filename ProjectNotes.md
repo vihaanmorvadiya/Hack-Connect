@@ -60,7 +60,7 @@ Users can browse hackathons, create teams, apply to join existing teams, and man
 - [ ] Search and filtering
 
 ### Frontend
-- [ ] Team listing page
+- [x] Team listing page
 - [ ] Team creation form
 - [ ] Hackathon-specific team browsing
 - [ ] Apply-to-team functionality
@@ -107,7 +107,9 @@ The next major phase is reviewing backend gaps and beginning frontend integratio
 
 ## 7. Next Session
 
-1. Review pending backend requirements.
-2. Plan the Teams frontend.
-3. Identify reusable components and API service functions.
-4. Begin connecting React to the completed backend endpoints.
+1. Create a `GET /api/teams/:id` endpoint to fetch a specific team's details (if not already implemented).
+2. Test the endpoint using Postman.
+3. Add a **View Details** button for each team in `TeamsPage.jsx`.
+4. Fetch and display the selected team's details.
+5. Test loading and error handling.
+6. Update project notes and push changes to GitHub.
