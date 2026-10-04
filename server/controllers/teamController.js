@@ -128,3 +128,26 @@ export const seeApplications = async (req, res) => {
         res.status(500).json({ error: "Internal server error" })
     }
 }
+
+export const getTeamById = async (req, res) => {
+    const { id } = req.params;
+
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    if (!uuidRegex.test(id)) {
+        return res.status(400).json({ error: "Invalid UUID" });
+    }
+
+    const sqlQuery = `SELECT * FROM teams WHERE team_id=$1`;
+    try {
+        const result = await pool.query(sqlQuery, [id]);
+        if (result.rows.length == 0) {
+            return res.status(404).json({ error: "No team found" });
+        }
+        res.status(200).json(result.rows[0]);
+    }
+    catch (error) {
+        console.error("Database query error", error.stack);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};

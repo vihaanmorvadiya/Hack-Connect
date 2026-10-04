@@ -43,6 +43,10 @@ const TeamsPage = () => {
                         </div>
                     )
                 }))}
+
+                <label>Enter ID:</label>
+                <input type='text'></input>
+                <button>Get Team</button>
         </>
     )
 }

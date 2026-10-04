@@ -7,3 +7,16 @@ export async function fetchTeams(){
 
     return response.json();
 }
+
+export async function fetchTeamById(id) {
+    const response = await fetch(
+        `http://localhost:3000/api/teams/${id}`
+    );
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch team");
+    }
+
+    return response.json();
+}
