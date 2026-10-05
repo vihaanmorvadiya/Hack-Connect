@@ -107,9 +107,9 @@ The next major phase is reviewing backend gaps and beginning frontend integratio
 
 ## 7. Next Session
 
-1. Create a `GET /api/teams/:id` endpoint to fetch a specific team's details (if not already implemented).
-2. Test the endpoint using Postman.
-3. Add a **View Details** button for each team in `TeamsPage.jsx`.
-4. Fetch and display the selected team's details.
-5. Test loading and error handling.
-6. Update project notes and push changes to GitHub.
+1. Create frontend Team Creation form.
+2. Add input fields for team name, description, maximum members, hackathon ID and leader ID.
+3. Create `createTeam()` function in `teamService.js`.
+4. Connect the form to the existing `POST /api/teams` backend endpoint.
+5. Handle loading, success and error states.
+6. Test team creation and verify the new team appears in the teams list.
