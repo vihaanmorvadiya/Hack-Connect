@@ -10,6 +10,17 @@ const TeamsPage = () => {
     const [team, setTeam] = useState(null)
     const [loader, setLoader] = useState("")
     const [err, setErr] = useState("")
+    const [formData, setFormData] = useState({
+            "team_name": '',
+            "description": '',
+            "max_members": '',
+            "hack_id": '',
+            "leader_id": '',
+        });
+
+    const handleFormChange = (e) => {
+        setFormData({...formData,[e.target.name]:e.target.value});
+    }
 
     const handlegetTeams = async () => {
         setLoad(true);
@@ -73,6 +84,20 @@ const TeamsPage = () => {
                     <p>Created at: {team.created_at}</p>
                 </div>
             ) : null}
+
+            <form onSubmit={handleSubmit}>
+                <label>Team Name:</label>
+                <input type="text" name='team_name' value={formData.name} onChange={handleFormChange} />
+                <label>Description:</label>
+                <input type="text" name='description' value={formData.description} onChange={handleFormChange} />
+                <label>Maximum members:</label>
+                <input type="number" name='max_members' value={formData.max_members} onChange={handleFormChange} />
+                <label>Hack ID:</label>
+                <input type="text" name='hack_id' value={formData.hack_id} onChange={handleFormChange} />
+                <label>Leader id:</label>
+                <input type="text" name='leader_id' value={formData.leader_id} onChange={handleFormChange} />
+                <button type='submit'>Submit</button>
+            </form>
 
             {/* <label>Enter ID:</label>
                 <input type='text'></input>
