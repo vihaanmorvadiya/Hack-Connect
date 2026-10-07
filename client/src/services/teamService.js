@@ -20,3 +20,20 @@ export async function fetchTeamById(id) {
 
     return response.json();
 }
+
+export async function createTeam(teamData){
+    const response = await fetch("http://localhost:3000/api/teams",{
+        method:'POST',
+        body:JSON.stringify(teamData),
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+
+        if(!response.ok){
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Failed to create team")
+        }
+    
+    return response.json();
+}

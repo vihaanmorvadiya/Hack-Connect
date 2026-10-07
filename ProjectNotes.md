@@ -61,13 +61,13 @@ Users can browse hackathons, create teams, apply to join existing teams, and man
 
 ### Frontend
 - [x] Team listing page
-- [ ] Team creation form
+- [x] Team creation form
 - [ ] Hackathon-specific team browsing
 - [ ] Apply-to-team functionality
 - [ ] View application status
 - [ ] Leader dashboard for accepting/rejecting applications
-- [ ] Frontend integration with remaining backend APIs
-- [ ] Loading, error and success states
+- [x] Frontend integration with remaining backend APIs
+- [x] Loading, error and success states
 - [ ] UI polishing and responsive design
 
 ### Final Phase
@@ -107,9 +107,8 @@ The next major phase is reviewing backend gaps and beginning frontend integratio
 
 ## 7. Next Session
 
-1. Create frontend Team Creation form.
-2. Add input fields for team name, description, maximum members, hackathon ID and leader ID.
-3. Create `createTeam()` function in `teamService.js`.
-4. Connect the form to the existing `POST /api/teams` backend endpoint.
-5. Handle loading, success and error states.
-6. Test team creation and verify the new team appears in the teams list.
+1. Improve team creation success/error handling and reset the form after successful creation.
+2. Start hackathon-specific team browsing using `hack_id`.
+3. Allow users to view only teams belonging to a selected hackathon.
+4. Test the filtering flow from backend to frontend.
+5. Update project notes and commit changes.

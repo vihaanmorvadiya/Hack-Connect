@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import { fetchTeamById, fetchTeams } from '../services/teamService'
+import { createTeam, fetchTeamById, fetchTeams } from '../services/teamService'
 
 const TeamsPage = () => {
 
@@ -17,6 +17,7 @@ const TeamsPage = () => {
             "hack_id": '',
             "leader_id": '',
         });
+    const [createError, setCreateError] = useState("");
 
     const handleFormChange = (e) => {
         setFormData({...formData,[e.target.name]:e.target.value});
@@ -25,6 +26,7 @@ const TeamsPage = () => {
     const handlegetTeams = async () => {
         setLoad(true);
         setError("");
+        setTeam(null);
         try {
             const data = await fetchTeams();
             setTeams(data);
@@ -50,6 +52,24 @@ const TeamsPage = () => {
         }
         finally {
             setLoader("");
+        }
+    }
+
+    async function handleSubmit(e){
+        e.preventDefault();
+        setCreateError("");
+
+        try{
+            await createTeam(formData);
+
+            const updatedData = await fetchTeams();
+            setTeams(updatedData);
+
+            alert("Team created successfully");
+        }
+        catch(error){
+            setCreateError(error.message);
+            console.error(error)
         }
     }
 
@@ -87,7 +107,7 @@ const TeamsPage = () => {
 
             <form onSubmit={handleSubmit}>
                 <label>Team Name:</label>
-                <input type="text" name='team_name' value={formData.name} onChange={handleFormChange} />
+                <input type="text" name='team_name' value={formData.team_name} onChange={handleFormChange} />
                 <label>Description:</label>
                 <input type="text" name='description' value={formData.description} onChange={handleFormChange} />
                 <label>Maximum members:</label>
@@ -98,6 +118,9 @@ const TeamsPage = () => {
                 <input type="text" name='leader_id' value={formData.leader_id} onChange={handleFormChange} />
                 <button type='submit'>Submit</button>
             </form>
+
+
+            {createError && <p>{createError}</p>}
 
             {/* <label>Enter ID:</label>
                 <input type='text'></input>
