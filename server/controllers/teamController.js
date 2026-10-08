@@ -1,9 +1,26 @@
 import pool from "../db.js"
 
 export async function getAllTeams(req, res) {
-    const sqlQuery = "SELECT * FROM teams";
+    const{hack_id}= req.query;
+
+    let sqlQuery;
+    let VALUES;
+
+    if(!hack_id){
+        sqlQuery = "SELECT * FROM teams";
+        VALUES = [];
+    }
+    else{
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+        if (!uuidRegex.test(hack_id)) {
+        return res.status(400).json({ error: "Invalid hackathon UUID" });
+        }
+        sqlQuery = "SELECT * FROM teams WHERE hack_id=$1";
+        VALUES = [hack_id]
+    }
     try {
-        const result = await pool.query(sqlQuery);
+        const result = await pool.query(sqlQuery,VALUES);
         res.status(200).json(result.rows);
     }
     catch (err) {

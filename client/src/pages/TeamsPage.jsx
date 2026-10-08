@@ -11,24 +11,29 @@ const TeamsPage = () => {
     const [loader, setLoader] = useState("")
     const [err, setErr] = useState("")
     const [formData, setFormData] = useState({
-            "team_name": '',
-            "description": '',
-            "max_members": '',
-            "hack_id": '',
-            "leader_id": '',
-        });
+        "team_name": '',
+        "description": '',
+        "max_members": '',
+        "hack_id": '',
+        "leader_id": '',
+    });
+
+    const [hackId,setHackId] = useState("")
+
     const [createError, setCreateError] = useState("");
+    const [createSuccess, setCreateSuccess] = useState(false);
 
     const handleFormChange = (e) => {
-        setFormData({...formData,[e.target.name]:e.target.value});
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     }
 
-    const handlegetTeams = async () => {
+    const handlegetTeams = async (hackId = "") => {
         setLoad(true);
         setError("");
         setTeam(null);
+
         try {
-            const data = await fetchTeams();
+            const data = await fetchTeams(hackId);
             setTeams(data);
         }
         catch (error) {
@@ -55,19 +60,20 @@ const TeamsPage = () => {
         }
     }
 
-    async function handleSubmit(e){
+    async function handleSubmit(e) {
         e.preventDefault();
         setCreateError("");
+        setCreateSuccess(false);
 
-        try{
+        try {
             await createTeam(formData);
 
             const updatedData = await fetchTeams();
             setTeams(updatedData);
-
+            setCreateSuccess(true);
             alert("Team created successfully");
         }
-        catch(error){
+        catch (error) {
             setCreateError(error.message);
             console.error(error)
         }
@@ -75,7 +81,12 @@ const TeamsPage = () => {
 
     return (
         <>
-            <button onClick={handlegetTeams} disabled={load}>
+
+            <label>Hack ID:</label>
+            <input type="text" value={hackId} onChange={(e)=>setHackId(e.target.value)} placeholder="Enter Hackathon ID" />
+            <button type='submit' onClick={()=>handlegetTeams(hackId)}>Filter teams</button>
+
+            <button onClick={()=>handlegetTeams()} disabled={load}>
                 {load ? "Loading..." : "Get Teams"}
             </button>
 
@@ -121,6 +132,7 @@ const TeamsPage = () => {
 
 
             {createError && <p>{createError}</p>}
+            {createSuccess && <p>Team created successfully!</p>}
 
             {/* <label>Enter ID:</label>
                 <input type='text'></input>

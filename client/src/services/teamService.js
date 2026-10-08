@@ -1,8 +1,14 @@
-export async function fetchTeams(){
-    const response = await fetch("http://localhost:3000/api/teams")
+export async function fetchTeams(hackId){
+    
+    const url = hackId
+                    ?`http://localhost:3000/api/teams?hack_id=${encodeURIComponent(hackId)}`
+                    :`http://localhost:3000/api/teams`
+
+    const response = await fetch(url)
 
     if(!response.ok){
-        throw new Error("Failed to fetch teams")
+        const data = await response.json();
+        throw new Error(data.error || "Failed to fetch teams");
     }
 
     return response.json();

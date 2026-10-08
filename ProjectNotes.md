@@ -107,8 +107,8 @@ The next major phase is reviewing backend gaps and beginning frontend integratio
 
 ## 7. Next Session
 
-1. Improve team creation success/error handling and reset the form after successful creation.
-2. Start hackathon-specific team browsing using `hack_id`.
-3. Allow users to view only teams belonging to a selected hackathon.
-4. Test the filtering flow from backend to frontend.
+1. Test hackathon-specific team filtering with valid, invalid, and empty hackathon IDs.
+2. Replace the manual hackathon ID input with a dropdown populated using the existing Hackathons API.
+3. Allow users to select a hackathon and view its teams.
+4. Verify that switching hackathons updates the displayed teams correctly.
 5. Update project notes and commit changes.
