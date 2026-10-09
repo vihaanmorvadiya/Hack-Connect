@@ -18,10 +18,12 @@ const TeamsPage = () => {
         "leader_id": '',
     });
 
-    const [hackId,setHackId] = useState("")
-
     const [createError, setCreateError] = useState("");
     const [createSuccess, setCreateSuccess] = useState(false);
+
+
+    const [selectedHackID,setSelectedHackId] =  useState("")
+
 
     const handleFormChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -82,11 +84,23 @@ const TeamsPage = () => {
     return (
         <>
 
-            <label>Hack ID:</label>
-            <input type="text" value={hackId} onChange={(e)=>setHackId(e.target.value)} placeholder="Enter Hackathon ID" />
-            <button type='submit' onClick={()=>handlegetTeams(hackId)}>Filter teams</button>
+            {/* <label>Hack ID:</label>
+            <input type="text" value={hackId} onChange={(e)=>setHackId(e.target.value)} placeholder="Enter Hackathon ID" /> */}
+            <select value={selectedHackID} onChange={(e)=>setSelectedHackId(e.target.value)}>
+                <option value="">Select a hackathon:</option>
+                <option value="38cf1ba6-6865-4a9e-be36-2edb0938200d">CodeStorm 2026</option>
+                <option value="fea30a76-01f8-46a4-81c3-fda9a8ac7bad">Codehunt</option>
+                <option value="1f0b69ba-2471-4799-b687-fb6a05620f0b">HelloWorld</option>
+                <option value="35986865-62c5-4341-88ea-ed4683f62edc">Helloworld(1)</option>
+                <option value="03450b03-6d85-46ad-b289-e25b2fa89c73">FirstBuild</option>
+                <option value="cb3d2d67-236d-4c69-b9c7-f39a28a19d93">FirstHack</option>
+                <option value="a9378b12-d542-4b33-aeb2-f06ec272bf16">Hack</option>
+                <option value="9bf5e421-0b60-4a72-8251-873cac90b9cd">Hack(1)</option>
+                <option value="6f30a5d0-30b2-41b5-ae93-72837fca93fb">HackNiche</option>
+            </select>
+            <button type='submit' onClick={()=>handlegetTeams(selectedHackID)}>Filter teams</button>
 
-            <button onClick={()=>handlegetTeams()} disabled={load}>
+            <button onClick={()=>handlegetTeams()} disabled={!selectedHackID || load}>
                 {load ? "Loading..." : "Get Teams"}
             </button>
 
@@ -95,11 +109,7 @@ const TeamsPage = () => {
                     return (
                         <div key={team.team_id} className='display'>
                             <p>Name:{team.team_name}</p>
-                            {/* <p>Description:{team.description}</p> */}
                             <p>Max Members:{team.max_members}</p>
-                            {/* <p>Hackathon ID:{team.hack_id}</p> */}
-                            {/* <p>Leader ID:{team.leader_id}</p> */}
-                            {/* <p>Created at:{team.created_at}</p> */}
                             <button onClick={() => handleViewDetails(team.team_id)}>View Details</button>
                         </div>
                     )

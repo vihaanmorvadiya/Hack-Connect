@@ -107,8 +107,9 @@ The next major phase is reviewing backend gaps and beginning frontend integratio
 
 ## 7. Next Session
 
-1. Test hackathon-specific team filtering with valid, invalid, and empty hackathon IDs.
-2. Replace the manual hackathon ID input with a dropdown populated using the existing Hackathons API.
-3. Allow users to select a hackathon and view its teams.
-4. Verify that switching hackathons updates the displayed teams correctly.
-5. Update project notes and commit changes.
+1. Fetch hackathons using the existing GET /api/hackathons API.
+2. Replace hardcoded dropdown options with hackathons fetched from PostgreSQL.
+3. Display hackathon names while storing their hack_id as the selected value.
+4. Handle loading, error, and empty states for the dropdown.
+5. Test filtering teams by selecting different hackathons.
+6. Update project notes and push changes to GitHub.
