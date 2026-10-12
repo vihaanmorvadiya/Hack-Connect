@@ -107,9 +107,10 @@ The next major phase is reviewing backend gaps and beginning frontend integratio
 
 ## 7. Next Session
 
-1. Fetch hackathons using the existing GET /api/hackathons API.
-2. Replace hardcoded dropdown options with hackathons fetched from PostgreSQL.
-3. Display hackathon names while storing their hack_id as the selected value.
-4. Handle loading, error, and empty states for the dropdown.
-5. Test filtering teams by selecting different hackathons.
-6. Update project notes and push changes to GitHub.
+1. Create an Apply to Team button for each team.
+2. Review the existing POST /api/applications endpoint.
+3. Create applyToTeam() in applicationService.js.
+4. Connect the Apply button to the backend.
+5. Display application success/error messages.
+6. Test duplicate applications and existing team membership.
+7. Update project notes and commit changes.
