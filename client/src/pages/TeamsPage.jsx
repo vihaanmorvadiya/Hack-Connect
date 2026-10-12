@@ -1,6 +1,8 @@
 import React from 'react'
 import { useState } from 'react'
 import { createTeam, fetchTeamById, fetchTeams } from '../services/teamService'
+import { fetchHackathons } from '../services/hackathonService'
+import { useEffect } from 'react'
 
 const TeamsPage = () => {
 
@@ -18,12 +20,16 @@ const TeamsPage = () => {
         "leader_id": '',
     });
 
+
     const [createError, setCreateError] = useState("");
     const [createSuccess, setCreateSuccess] = useState(false);
 
 
-    const [selectedHackID,setSelectedHackId] =  useState("")
+    const [selectedHackID, setSelectedHackId] = useState("")
 
+    const [hacks, setHacks] = useState([]);
+    const [hackerr, setHackerr] = useState("")
+    const [hackload, setHackload] = useState("")
 
     const handleFormChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -81,26 +87,46 @@ const TeamsPage = () => {
         }
     }
 
+    useEffect(() => {
+        async function loadHackathons() {
+            setHackload("Loading hackathons")
+            setHackerr("")
+            try {
+                const data = await fetchHackathons();
+                setHacks(data);
+            }
+            catch (error) {
+                setHackerr(error.message)
+                console.log(error)
+            }
+            finally {
+                setHackload("");
+            }
+        }
+        loadHackathons();
+    }, [])
+
+
     return (
         <>
-
+            {hackload
+                ? hackload
+                : hackerr
+                    ? hackerr
+                    : hacks.length === 0
+                        ? "No hackathons available"
+                        : null}
             {/* <label>Hack ID:</label>
             <input type="text" value={hackId} onChange={(e)=>setHackId(e.target.value)} placeholder="Enter Hackathon ID" /> */}
-            <select value={selectedHackID} onChange={(e)=>setSelectedHackId(e.target.value)}>
+            <select value={selectedHackID} onChange={(e) => setSelectedHackId(e.target.value)}>
                 <option value="">Select a hackathon:</option>
-                <option value="38cf1ba6-6865-4a9e-be36-2edb0938200d">CodeStorm 2026</option>
-                <option value="fea30a76-01f8-46a4-81c3-fda9a8ac7bad">Codehunt</option>
-                <option value="1f0b69ba-2471-4799-b687-fb6a05620f0b">HelloWorld</option>
-                <option value="35986865-62c5-4341-88ea-ed4683f62edc">Helloworld(1)</option>
-                <option value="03450b03-6d85-46ad-b289-e25b2fa89c73">FirstBuild</option>
-                <option value="cb3d2d67-236d-4c69-b9c7-f39a28a19d93">FirstHack</option>
-                <option value="a9378b12-d542-4b33-aeb2-f06ec272bf16">Hack</option>
-                <option value="9bf5e421-0b60-4a72-8251-873cac90b9cd">Hack(1)</option>
-                <option value="6f30a5d0-30b2-41b5-ae93-72837fca93fb">HackNiche</option>
+                {hacks.map((hack) => (
+                    <option key={hack.hack_id} value={hack.hack_id}>{hack.name}</option>
+                ))}
             </select>
-            <button type='submit' onClick={()=>handlegetTeams(selectedHackID)}>Filter teams</button>
+            <button type='button' onClick={() => handlegetTeams(selectedHackID)} disabled={!selectedHackID || load}>Filter teams</button>
 
-            <button onClick={()=>handlegetTeams()} disabled={!selectedHackID || load}>
+            <button onClick={() => handlegetTeams()} disabled={load}>
                 {load ? "Loading..." : "Get Teams"}
             </button>
 
