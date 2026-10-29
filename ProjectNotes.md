@@ -105,12 +105,32 @@ The next major phase is reviewing backend gaps and beginning frontend integratio
 - Commit and push meaningful changes to GitHub.
 - Aim for approximately one hour of consistent work per day, with smaller tasks on busy days.
 
-## 7. Next Session
+## Hackathon Connect — Daily Progress
+**Date:** 29 October 2026
 
-1. Create an Apply to Team button for each team.
-2. Review the existing POST /api/applications endpoint.
-3. Create applyToTeam() in applicationService.js.
-4. Connect the Apply button to the backend.
-5. Display application success/error messages.
-6. Test duplicate applications and existing team membership.
-7. Update project notes and commit changes.
+### Completed
+- Added an **Apply to Team** button to each team card in `TeamsPage.jsx`.
+- Used `teams.map()` to render the button for every team.
+- Passed the selected team's ID using `handleApply(team.team_id)`.
+- Created a `handleApply(teamId)` handler.
+- Added `selectedTeamId` state using `useState` and updated it when a team is selected.
+- Tested that the selected team ID can be displayed.
+
+### Concepts revised
+- `map()` renders a list of elements from an array.
+- `onClick` handles button clicks.
+- `() => handleApply(team.team_id)` passes the current team's ID when clicked.
+- `useState` stores information that can change and trigger a UI update.
+
+### Pending
+- Verify selection using multiple team cards.
+- Connect Apply to Team to the existing `POST /api/applications` endpoint.
+- Add an application message and suitable success/error feedback.
+- Add authentication and authorization before deployment.
+
+### Next session
+1. Revise today's code and explain the flow without looking at notes.
+2. Review how the frontend communicates with the backend.
+3. Begin connecting the Apply to Team button to the application API.
+
+**Goal:** Build a usable V1 while understanding the code, not just copying it.

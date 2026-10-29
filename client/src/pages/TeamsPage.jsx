@@ -30,6 +30,7 @@ const TeamsPage = () => {
     const [hacks, setHacks] = useState([]);
     const [hackerr, setHackerr] = useState("")
     const [hackload, setHackload] = useState("")
+    const [selectedTeamId, setSelectedTeamId] = useState("");
 
     const handleFormChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -66,6 +67,11 @@ const TeamsPage = () => {
         finally {
             setLoader("");
         }
+    }
+
+    async function handleApply(teamId){
+        setSelectedTeamId(teamId);
+        console.log("Selected team:",teamId)
     }
 
     async function handleSubmit(e) {
@@ -137,6 +143,7 @@ const TeamsPage = () => {
                             <p>Name:{team.team_name}</p>
                             <p>Max Members:{team.max_members}</p>
                             <button onClick={() => handleViewDetails(team.team_id)}>View Details</button>
+                            <button onClick={() => handleApply(team.team_id)}>Apply to team</button>
                         </div>
                     )
                 }))}
@@ -170,6 +177,8 @@ const TeamsPage = () => {
             {createError && <p>{createError}</p>}
             {createSuccess && <p>Team created successfully!</p>}
 
+            {selectedTeamId && <p>Selected team ID: {selectedTeamId}</p>}
+            
             {/* <label>Enter ID:</label>
                 <input type='text'></input>
                 <button>Get Team</button> */}
