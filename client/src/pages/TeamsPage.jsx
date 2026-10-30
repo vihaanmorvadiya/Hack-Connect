@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { createTeam, fetchTeamById, fetchTeams } from '../services/teamService'
 import { fetchHackathons } from '../services/hackathonService'
 import { useEffect } from 'react'
+import { createApplication } from '../services/applicationService'
 
 const TeamsPage = () => {
 
@@ -20,10 +21,17 @@ const TeamsPage = () => {
         "leader_id": '',
     });
 
+    const [appData,setAppData] = useState({
+        "team_id":'',
+        "user_id":'',
+        "message":''
+    })
+
 
     const [createError, setCreateError] = useState("");
     const [createSuccess, setCreateSuccess] = useState(false);
 
+    const [appError,setAppError] = useState("")
 
     const [selectedHackID, setSelectedHackId] = useState("")
 
@@ -34,6 +42,10 @@ const TeamsPage = () => {
 
     const handleFormChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
+
+    const handleAppFormChange = (e) => {
+        setAppData({ ...appData, [e.target.name]: e.target.value });
     }
 
     const handlegetTeams = async (hackId = "") => {
@@ -71,7 +83,14 @@ const TeamsPage = () => {
 
     async function handleApply(teamId){
         setSelectedTeamId(teamId);
-        console.log("Selected team:",teamId)
+
+        setAppData({
+            team_id:teamId,
+            user_id:'',
+            message:''
+        });
+
+        setAppError("");
     }
 
     async function handleSubmit(e) {
@@ -90,6 +109,28 @@ const TeamsPage = () => {
         catch (error) {
             setCreateError(error.message);
             console.error(error)
+        }
+    }
+
+    async function handleAppSubmit(e){
+        e.preventDefault();
+        setAppError("");
+
+        try{
+            await createApplication(appData);
+            alert("Application submitted successfully");
+
+            setAppData({
+            team_id: "",
+            user_id: "",
+            message: ""
+            });
+            
+            setSelectedTeamId("");
+        }
+        catch(error){
+            setAppError(error.message);
+            console.error(error);
         }
     }
 
@@ -173,11 +214,24 @@ const TeamsPage = () => {
                 <button type='submit'>Submit</button>
             </form>
 
+            {selectedTeamId && (
+            <form onSubmit={handleAppSubmit}>
+                <label>User ID:</label>
+                <input type="text" name='user_id' value={appData.user_id} onChange={handleAppFormChange}/>
+                <label>Message:</label>
+                <input type="text" name='message' value={appData.message} onChange={handleAppFormChange}/>
+                <button type='submit'>Submit</button>
+            </form>
+            )}
+
+
 
             {createError && <p>{createError}</p>}
             {createSuccess && <p>Team created successfully!</p>}
 
             {selectedTeamId && <p>Selected team ID: {selectedTeamId}</p>}
+
+            {appError&&<p>{appError}</p>}
             
             {/* <label>Enter ID:</label>
                 <input type='text'></input>

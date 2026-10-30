@@ -105,32 +105,49 @@ The next major phase is reviewing backend gaps and beginning frontend integratio
 - Commit and push meaningful changes to GitHub.
 - Aim for approximately one hour of consistent work per day, with smaller tasks on busy days.
 
-## Hackathon Connect — Daily Progress
-**Date:** 29 October 2026
+# Hackathon Connect — Session Notes
 
-### Completed
-- Added an **Apply to Team** button to each team card in `TeamsPage.jsx`.
-- Used `teams.map()` to render the button for every team.
-- Passed the selected team's ID using `handleApply(team.team_id)`.
-- Created a `handleApply(teamId)` handler.
-- Added `selectedTeamId` state using `useState` and updated it when a team is selected.
-- Tested that the selected team ID can be displayed.
+## Completed: Apply to Team frontend
 
-### Concepts revised
-- `map()` renders a list of elements from an array.
-- `onClick` handles button clicks.
-- `() => handleApply(team.team_id)` passes the current team's ID when clicked.
-- `useState` stores information that can change and trigger a UI update.
+Implemented the application submission flow in `TeamsPage.jsx`.
 
-### Pending
-- Verify selection using multiple team cards.
-- Connect Apply to Team to the existing `POST /api/applications` endpoint.
-- Add an application message and suitable success/error feedback.
-- Add authentication and authorization before deployment.
+### Features completed
+- Added an Apply to Team button to each team card.
+- Clicking the button stores the selected `team_id`.
+- Application form appears conditionally when a team is selected.
+- Controlled inputs for `user_id` and `message`.
+- `handleAppFormChange` updates form state.
+- `handleAppSubmit` submits the application.
+- Success and error feedback implemented.
 
-### Next session
-1. Revise today's code and explain the flow without looking at notes.
-2. Review how the frontend communicates with the backend.
-3. Begin connecting the Apply to Team button to the application API.
+### Application state
+```jsx
+const [appData, setAppData] = useState({
+    team_id: '',
+    user_id: '',
+    message: ''
+});
+```
 
-**Goal:** Build a usable V1 while understanding the code, not just copying it.
+### Backend integration
+- Uses `createApplication` imported from `../services/applicationService`.
+- Sends a POST request to `/api/applications`.
+- Backend already validates duplicate applications and team membership restrictions.
+
+## Next Session: My Applications
+
+Goal: Allow users to see all applications they have submitted.
+
+Suggested steps:
+1. Create a backend GET endpoint to fetch applications by `user_id`, if not already implemented.
+2. Create a frontend service function to fetch applications.
+3. Display applications in a list.
+4. Show team name, hackathon, application message and status.
+5. Handle loading, empty and error states.
+
+## Pending improvements
+- Replace manually entered user ID with authenticated user ID.
+- Add proper authentication and authorization before deployment.
+- Push today's changes to GitHub if not already done.
+
+**Starting point:** `TeamsPage.jsx` and `applicationService.js`.
