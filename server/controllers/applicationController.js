@@ -239,3 +239,34 @@ export const rejectApplication = async (req, res) => {
     }
 }
 
+export const getMyApplications = async (req,res) => {
+    const { userId } = req.params;
+
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    if (!uuidRegex.test(userId)) {
+        return res.status(400).json({ error: "Invalid user UUID" });
+    }
+
+    const userQuery = 'SELECT EXISTS (SELECT 1 FROM users WHERE user_id=$1)';
+    
+
+    const appQuery = 'SELECT * FROM applications WHERE user_id=$1'
+
+    try{
+        const userResult = await pool.query(userQuery,[userId]);
+
+        if(!userResult.rows[0].exists){
+            return res.status(404).json({error:'User not found'});
+        }
+
+        const appResult = await pool.query(appQuery,[userId]);
+        
+        res.status(200).json(appResult.rows)
+    }
+    catch(error){
+        console.error("Database query error",error.stack)
+        res.status(500).json({error:'Internal server error'})
+    }
+
+}
