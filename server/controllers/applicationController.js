@@ -250,7 +250,6 @@ export const getMyApplications = async (req,res) => {
 
     const userQuery = 'SELECT EXISTS (SELECT 1 FROM users WHERE user_id=$1)';
     
-
     const appQuery = 'SELECT * FROM applications WHERE user_id=$1'
 
     try{
@@ -269,4 +268,31 @@ export const getMyApplications = async (req,res) => {
         res.status(500).json({error:'Internal server error'})
     }
 
+}
+
+export const getTeamApplications = async (req,res) => {
+    const {teamId} = req.params;
+
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    if (!uuidRegex.test(teamId)) {
+        return res.status(400).json({ error: "Invalid team UUID" });
+    }
+    const teamQuery = 'SELECT EXISTS (SELECT 1 FROM teams WHERE team_id=$1)'
+    const appQuery = 'SELECT * FROM applications WHERE team_id=$1'
+    try{
+        const teamResult = await pool.query(teamQuery,[teamId]);
+
+        if(!teamResult.rows[0].exists){
+            return res.status(404).json({error:"Team not found"})
+        }
+
+        const appResult = await pool.query(appQuery,[teamId]);
+
+        return res.status(200).json(appResult.rows);
+    }
+    catch(error){
+        console.error("Database query error",error.stack);
+        res.status(500).json({error:"Internal server error"});
+    }
 }

@@ -25,3 +25,14 @@ export async function getMyApplications(userId){
 
     return response.json();
 }
+
+export async function getTeamApplications(teamId){
+    const response = await fetch(`http://localhost:3000/api/applications/team/${teamId}`)
+
+    if(!response.ok){
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch applications for this team")
+    }
+
+    return response.json();
+}
